@@ -1,13 +1,13 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import * as S from './styles';
 import { useStore } from 'store';
 import { Asset } from 'types/asset';
 import { toFixedNoRound } from 'lib/utils';
-import { formatToken } from 'lib/units';
+import { formatNumber, formatToken } from 'lib/units';
 import Modal from 'components/UI/Modal';
 import Button from 'components/UI/Button';
 import View from 'components/UI/View';
-import { fulfillInstantSaleOrder } from 'lib/opensea';
+import { fulfillInstantSaleOrder, computeBuyersFee } from 'lib/opensea';
 import { EventType } from 'opensea-js';
 import AssetDescription from 'components/Modals/Checkout/AssetDescription';
 import StatusBlock, { Status } from './StatusBlock';
@@ -26,6 +26,8 @@ const Checkout = () => {
   const formattedVidBalance = toFixedNoRound(formatToken(ethBalance), 2);
   const [status, setStatus] = useState(Status.init);
   const [transaction, setTransaction] = useState('');
+  const [fee, setFee] = useState('');
+  const [totalPrice, setTotalPrice] = useState('')
   const fetchAsset = async (id: number) => {
     const res = await assetsApi.fetchAsset(id);
     if (res.status === 'TRANSFERRED') {
@@ -83,6 +85,24 @@ const Checkout = () => {
       openSea.removeAllListeners();
     }
   });
+  useEffect(() => {
+    if (openSea && fee === '') {
+      computeBuyersFee(openSea, { account, item: asset.current } )
+        .then((buyersFee) => {
+          setFee(toFixedNoRound(formatToken(buyersFee), 4))
+        })
+        .catch((err) => {
+          console.error(err);
+        setStatus(Status.error);
+        });
+    }
+  }, [fee, openSea]);
+  useEffect(() => {
+    if (fee !== '' && asset) {
+      const total = parseFloat(asset.current.instantSalePrice) + parseFloat(fee)
+      setTotalPrice(total.toPrecision())
+    }
+  }, [fee, asset]);
   const isProcessing = Boolean(status);
   const isSuccess = Boolean(status === Status.complete);
   return (
@@ -94,7 +114,7 @@ const Checkout = () => {
           <StatusBlock status={status} />
         )
       ) : (
-        <AssetDescription asset={asset.current} balance={formattedVidBalance} />
+        <AssetDescription asset={asset.current} balance={formattedVidBalance} fee={fee} total={totalPrice}/>
       )}
       {isProcessing && !isSuccess && <S.ProgressBar status={status} />}
       {!status && (
