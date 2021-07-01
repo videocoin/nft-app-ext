@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import Container from 'components/UI/Container';
 import * as S from './styles';
 import { useForm, Controller } from 'react-hook-form';
@@ -12,7 +12,7 @@ import { pickBy } from 'lodash';
 import { toast } from 'react-toastify';
 
 const EditProfilePage = () => {
-  const { data, isLoading, refetch, isFetchedAfterMount } = useProfile();
+  const { data, refetch, isFetchedAfterMount } = useProfile();
   const defaultValues = useMemo(
     () => ({
       name: data?.user.name,

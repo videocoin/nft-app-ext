@@ -19,10 +19,18 @@ const TabNavButton = styled.button<{ active: boolean }>`
   font-size: 33px;
   font-weight: bold;
   padding-bottom: 30px;
-  border-bottom: 10px solid
-    ${({ active }) => (active ? '#17161A' : 'transparent')};
+  position: relative;
   &:not(:last-child) {
     margin-right: 100px;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 10px;
+    bottom: -10px;
+    background: #17161a;
+    display: ${({ active }) => (active ? 'block' : 'none')};
   }
 `;
 

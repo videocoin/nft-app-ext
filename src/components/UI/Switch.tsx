@@ -50,10 +50,10 @@ const Wrapper = styled.label`
   }
 `;
 
-const Switch = ({ register, name }: any) => {
+const Switch = ({ register, name, ...props }: any) => {
   return (
     <Wrapper>
-      <input type="checkbox" {...register(name)} />
+      <input type="checkbox" {...register(name)} {...props} />
       <div />
       <div />
     </Wrapper>

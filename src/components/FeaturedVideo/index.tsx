@@ -34,7 +34,7 @@ const FeaturedVideo = ({ asset }: { asset: Asset }) => {
       </S.Video>
       <S.Content>
         <View row centerV marginB={46}>
-          <Avatar src={owner.profileImgUrl} size="md" name={owner.user.name} />
+          <Avatar src={owner.profileImgUrl} size="md" name={owner.address} />
           <S.Nickname>@{owner.user.username}</S.Nickname>
           <IconButton>
             <ShareIcon />

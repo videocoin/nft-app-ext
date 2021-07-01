@@ -36,12 +36,23 @@ const primary = css`
   &:disabled {
     background: #a1aab9;
   }
+  transition: border-color 200ms ease 0s, color 200ms ease 0s,
+    background-color 200ms ease 0s, background-position-x 400ms ease-in-out 0s;
+
+  &:hover {
+    background-position-x: 2%;
+  }
 `;
 
 const secondary = css`
   background: #fff;
   border: 2px solid #edf0f4;
   color: #7f4acb;
+  box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.06);
+  transition: border-color 0.15s ease-in-out;
+  &:hover {
+    border-color: #7f4acb;
+  }
 `;
 
 const gradient = css`

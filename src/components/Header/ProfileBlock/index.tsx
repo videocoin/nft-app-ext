@@ -21,7 +21,7 @@ import { Account } from 'types/account';
 import Spinner from 'components/UI/Spinner';
 import { Network, OpenSeaPort } from 'opensea-js';
 
-const REACT_APP_TOKEN_ADDRESS = process.env.REACT_APP_TOKEN_ADDRESS as string;
+const REACT_APP_TOKEN_ADDRESS = window._env_.REACT_APP_TOKEN_ADDRESS as string;
 const BALANCE_FETCH_INTERVAL = 3000;
 
 const ProfileBlock = () => {
@@ -73,7 +73,10 @@ const ProfileBlock = () => {
     if (authToken && storedAccount === account) {
       const decoded = jwtDecode(authToken) as any;
       const isExp = decoded.exp * 1000 <= Date.now();
-      if (!isExp) return;
+      if (!isExp) {
+        updateOpenSea();
+        return;
+      }
     }
     let res;
     try {
@@ -86,21 +89,9 @@ const ProfileBlock = () => {
     localStorage.setItem('token', token);
     localStorage.setItem('account', account);
     setTokenHeader(token);
+    updateOpenSea();
     refetch();
   };
-
-  useEffect(() => {
-    if (!account || !library || !chainId) return;
-    const abi = require('contract/token.json').abi;
-    const vid = contract(REACT_APP_TOKEN_ADDRESS, abi, library);
-    setToken(vid);
-    setAccount(account);
-    auth();
-    updateOpenSea();
-  }, [account, chainId, library, setAccount, setToken]);
-  useEffect(() => {
-    getBalance();
-  }, [getBalance]);
 
   const updateOpenSea = () => {
     const token = localStorage.getItem('token') || '';
@@ -110,6 +101,18 @@ const ProfileBlock = () => {
     } as any);
     setOpenSea(openSeaPort);
   };
+
+  useEffect(() => {
+    if (!account || !library || !chainId) return;
+    const abi = require('contract/token.json').abi;
+    const vid = contract(REACT_APP_TOKEN_ADDRESS, abi, library);
+    setToken(vid);
+    setAccount(account);
+    auth();
+  }, [account, chainId, library, setAccount, setToken]);
+  useEffect(() => {
+    getBalance();
+  }, [getBalance]);
 
   useInterval(getBalance, BALANCE_FETCH_INTERVAL);
   const formattedEthBalance = toFixedNoRound(formatEther(ethBalance), 2);

@@ -1,8 +1,10 @@
 import axios, { AxiosError, AxiosTransformer } from 'axios';
 import qs from 'query-string';
-import { decamelizeKeys, camelizeKeys, camelize } from 'humps';
+import { decamelizeKeys, camelizeKeys } from 'humps';
+import { store } from 'App';
 
-const baseURL = process.env.REACT_APP_BASE_URL;
+const baseURL = window._env_.REACT_APP_BASE_URL;
+console.log(baseURL);
 const token = localStorage.getItem('token');
 
 const defaultTransformers = (
@@ -44,6 +46,27 @@ const api = axios.create({
       skipNull: true,
     }),
 });
+
+api.interceptors.response.use(
+  async function (config) {
+    return config;
+  },
+  function (error: AxiosError) {
+    if (!error.response) {
+      return Promise.reject(error);
+    }
+    const {
+      response: { status },
+    } = error;
+
+    if (status === 401) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('account');
+      store.metamaskStore.reset();
+    }
+    return Promise.reject(error);
+  }
+);
 
 export function setTokenHeader(token: string) {
   const storedToken = localStorage.getItem('token');

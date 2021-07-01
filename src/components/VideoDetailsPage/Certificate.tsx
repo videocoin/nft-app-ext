@@ -14,8 +14,6 @@ interface CertificateItem {
   link?: string;
 }
 
-const REACT_APP_TOKEN_ADDRESS = process.env.REACT_APP_TOKEN_ADDRESS as string;
-
 const CertItem = ({
   item: { name, icon, popup, link },
   onClick,

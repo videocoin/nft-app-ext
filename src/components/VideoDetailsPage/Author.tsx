@@ -7,21 +7,17 @@ import { AuthorName } from './styles';
 import { Creator } from 'types/creators';
 
 const Author = ({ owner }: { owner: Creator }) => {
-  const { profileImgUrl, user } = owner;
+  const { profileImgUrl, user, address } = owner;
   return (
     <div>
       <View row centerV marginB={30}>
-        <Avatar
-          src={profileImgUrl || 'https://i.pravatar.cc/160?img=7'}
-          size="md"
-          name={user?.name}
-        />
+        <Avatar src={profileImgUrl} size="md" name={address} />
         <View marginL={20} marginR={10}>
           <Badge1 />
         </View>
         <Badge2 />
       </View>
-      <AuthorName>@{user?.name || 'jerremyirons'}</AuthorName>
+      <AuthorName>@{user?.username || ''}</AuthorName>
     </div>
   );
 };

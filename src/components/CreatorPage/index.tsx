@@ -45,7 +45,7 @@ const CreatorPage = () => {
       <S.Profile>
         <Container>
           <View row centerV marginB={50}>
-            <Avatar size="xl" src={profileImgUrl} name={name} />
+            <Avatar size="xl" src={profileImgUrl} name={address} />
             <View marginL="auto" row centerV>
               <Button size="md" theme="secondary">
                 Follow

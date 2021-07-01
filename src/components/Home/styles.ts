@@ -1,5 +1,10 @@
 import styled from 'styled-components';
 
+export const Wrapper = styled.div`
+  border-bottom: 1px solid #edf0f4;
+  margin-bottom: 100px;
+`;
+
 export const SubscribeTitle = styled.div`
   font-size: 66px;
   font-weight: bold;

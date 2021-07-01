@@ -2,7 +2,6 @@ import api from './index';
 import { AxiosRequestConfig } from 'axios';
 import { Asset } from '../types/asset';
 import { QueryFunctionContext, useQuery } from 'react-query';
-import { Creator } from '../types/creators';
 import { decamelizeKeys } from 'humps';
 
 const routes = {
@@ -18,7 +17,7 @@ const routes = {
 };
 
 const assetsApi = {
-  async fetchAssets({ pageParam, queryKey }: QueryFunctionContext) {
+  async fetchAssets({ queryKey }: QueryFunctionContext) {
     const [, params] = queryKey;
     const { data } = await api.get<{ items: Asset[] }>(routes.basePath, {
       params: decamelizeKeys({

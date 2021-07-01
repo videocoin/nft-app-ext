@@ -11,11 +11,7 @@ const List = ({ data }: { data: Asset[] }) => {
       </li>
     );
   };
-  return (
-    <S.Wrapper>
-      <S.Grid>{data.map(renderItem)}</S.Grid>
-    </S.Wrapper>
-  );
+  return <S.Grid>{data.map(renderItem)}</S.Grid>;
 };
 
 export default List;
