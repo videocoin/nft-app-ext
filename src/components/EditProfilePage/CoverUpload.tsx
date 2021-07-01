@@ -5,14 +5,17 @@ import readFile from 'helpers/readFile';
 
 const CoverUpload = ({ onChange }: { onChange: (val: string) => void }) => {
   const [preview, setPreview] = useState('');
-  const onDrop = useCallback(async (acceptedFiles) => {
-    // Do something with the files
-    if (!acceptedFiles?.length) return;
-    const res = await readFile(acceptedFiles[0]);
-    setPreview(res);
-    onChange(res);
-  }, []);
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const onDrop = useCallback(
+    async (acceptedFiles) => {
+      // Do something with the files
+      if (!acceptedFiles?.length) return;
+      const res = await readFile(acceptedFiles[0]);
+      setPreview(res);
+      onChange(res);
+    },
+    [onChange]
+  );
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   return (
     <S.CoverDropzone {...getRootProps()}>

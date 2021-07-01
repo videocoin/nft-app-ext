@@ -8,7 +8,7 @@ import bg2x from './bg@2x.jpg';
 
 const BecomeCreator = () => {
   return (
-    <View paddingV={80}>
+    <View paddingV={100}>
       <Container>
         <S.Title>Welcome to the future of creative economy.</S.Title>
         <S.Description>

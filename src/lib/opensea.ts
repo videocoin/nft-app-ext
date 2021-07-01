@@ -1,4 +1,8 @@
 import { OpenSeaPort, EventType } from 'opensea-js';
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
+
+const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
+const INVERSE_BASIS_POINT = 10000;
 
 export function makeInstantSaleOrder(
   openSeaPort: OpenSeaPort,
@@ -33,6 +37,39 @@ export async function fulfillInstantSaleOrder(
     order,
     accountAddress: account,
   });
+}
+
+export async function computeBuyersFee(
+  openSeaPort: OpenSeaPort,
+  { account, item }: any
+): Promise<BigNumberish> {
+  const order = await openSeaPort.api.getOrder({
+    asset_contract_address: item.assetContract.address,
+    token_id: item.tokenId,
+  });
+
+  const matchingOrder = await openSeaPort._makeMatchingOrder({
+    order,
+    accountAddress: account,
+    recipientAddress: account,
+  });
+
+  const price = await openSeaPort.getCurrentPrice(order);
+  if (order.feeRecipient && order.feeRecipient !== NULL_ADDRESS) {
+    if (order.feeMethod === 1) {
+      const relayerFee = matchingOrder.takerRelayerFee
+        .mul(price)
+        .div(INVERSE_BASIS_POINT);
+      const protocolFee = matchingOrder.takerProtocolFee
+        .mul(price)
+        .div(INVERSE_BASIS_POINT);
+      const feeTotal = relayerFee.add(protocolFee);
+      return BigNumber.from(feeTotal.toString());
+    } else {
+      throw new Error('unexpected fee method');
+    }
+  }
+  return '0';
 }
 
 function subscribeSeaportEvents(openSeaPort: OpenSeaPort) {

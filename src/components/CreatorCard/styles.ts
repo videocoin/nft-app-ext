@@ -24,6 +24,7 @@ export const Bg = styled.div`
 export const Content = styled.div`
   padding: 0 30px 46px;
   margin-top: -50px;
+  position: relative;
 `;
 
 export const Name = styled.div`
@@ -35,6 +36,8 @@ export const Name = styled.div`
 
 export const Nickname = styled.div`
   font-size: 32px;
+  line-height: 40px;
+  white-space: nowrap;
   display: inline-block;
   font-weight: 700;
   background: linear-gradient(

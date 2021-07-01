@@ -1,4 +1,4 @@
-import { QueryFunctionContext, useInfiniteQuery, useQuery } from 'react-query';
+import { QueryFunctionContext, useQuery } from 'react-query';
 import api from 'api/index';
 import { Creator } from 'types/creators';
 import { decamelizeKeys } from 'humps';

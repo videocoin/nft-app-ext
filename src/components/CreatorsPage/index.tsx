@@ -5,7 +5,6 @@ import { Creator } from 'types/creators';
 import { flatten, path } from 'lodash/fp';
 import List from 'components/CreatorsPage/List';
 import SearchBar from 'components/CreatorsPage/SearchBar';
-import View from 'components/UI/View';
 import { Wrapper } from './styles';
 
 const ListLoadLimit = 25;

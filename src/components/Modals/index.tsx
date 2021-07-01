@@ -5,6 +5,7 @@ import FadeModal from 'components/UI/FadeModal';
 import ConnectWallet from './ConnectWallet';
 import PlaceBid from './PlaceBid';
 import Checkout from 'components/Modals/Checkout';
+import PutOnSale from './PutOnSale';
 
 const Modals = () => {
   const { modals } = useStore('modalsStore');
@@ -18,6 +19,9 @@ const Modals = () => {
       </FadeModal>
       <FadeModal isOpen={modals.has('checkout')}>
         <Checkout />
+      </FadeModal>
+      <FadeModal isOpen={modals.has('putOnSale')}>
+        <PutOnSale />
       </FadeModal>
     </div>
   );

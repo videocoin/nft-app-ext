@@ -2,10 +2,17 @@ import React from 'react';
 import { Asset } from 'types/asset';
 import View from 'components/UI/View';
 import Avatar from 'components/Avatar';
+import Button from '../UI/Button';
+import { useStore } from 'store';
+import { useProfile } from 'api/account';
 import * as S from './styles';
 
 const Sold = ({ asset }: { asset: Asset }) => {
+  const { data } = useProfile();
   const { instantSalePrice, owner } = asset;
+  const { openModal } = useStore('modalsStore');
+  const handlePutOnSale = () => openModal('putOnSale', { asset });
+  const isOwner = data?.id === asset.owner.id;
   return (
     <S.Bid>
       <S.BidInfo>
@@ -17,11 +24,18 @@ const Sold = ({ asset }: { asset: Asset }) => {
         <div>
           <S.BidLabel>Owned by</S.BidLabel>
           <View row centerV>
-            <Avatar name={owner.user.name} src={owner.profileImgUrl} />
-            <S.OwnerName>@{owner.user.name}</S.OwnerName>
+            <Avatar name={owner.address} src={owner.profileImgUrl} />
+            <S.OwnerName>@{owner.user.username}</S.OwnerName>
           </View>
         </div>
       </S.BidInfo>
+      {isOwner && (
+        <S.BidBtns>
+          <Button size="lg" onClick={handlePutOnSale}>
+            Put on sale
+          </Button>
+        </S.BidBtns>
+      )}
     </S.Bid>
   );
 };

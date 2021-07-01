@@ -1,4 +1,4 @@
-FROM node:14.4-alpine3.11 as builder
+FROM node:15-alpine3.11 as builder
 
 RUN apk add build-base git libc6-compat openssh-client python autoconf automake libtool nasm libpng-dev
 RUN apk upgrade libcurl
@@ -13,6 +13,10 @@ ARG REACT_APP_WYVERN_ATOMICIZER
 ARG REACT_APP_WYVERN_TOKEN_TRANSFER_PROXY        
 ARG REACT_APP_WYVERN_DAO
 ARG REACT_APP_WYVERN_TOKEN
+ARG REACT_APP_CUSTOM_PROVIDER_URL
+ARG REACT_APP_API_BASE_CUSTOM
+ARG REACT_APP_SITE_HOST_CUSTOM
+ARG REACT_APP_CUSTOM_FEE_RECIPIENT
 
 COPY . /ui
 

@@ -20,7 +20,7 @@ const Success = ({
         <S.Label>
           <strong>{name}</strong>
         </S.Label>
-        <S.Value>by @{creator.user.name}</S.Value>
+        <S.Value>by @{creator.user.username}</S.Value>
       </S.Row>
       <S.Row>
         <S.Label>Status</S.Label>
@@ -29,7 +29,13 @@ const Success = ({
       <S.Row>
         <S.Label>Transaction ID</S.Label>
         <S.Value>
-          <a href={`https://rinkeby.etherscan.io/tx/${transaction}`} target='_blank'>{hash}</a>
+          <a
+            href={`https://rinkeby.etherscan.io/tx/${transaction}`}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {hash}
+          </a>
         </S.Value>
       </S.Row>
     </>

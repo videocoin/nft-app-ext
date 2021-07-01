@@ -224,3 +224,8 @@ export const OpenButton = styled.div`
     width: 100%;
   }
 `;
+
+export const Fee = styled.div`
+  font-size: 18px;
+  margin-top: 12px;
+`;

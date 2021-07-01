@@ -68,7 +68,7 @@ const FilecoinNetwork = ({
           <a
             target="_blank"
             rel="noopener noreferrer"
-            href={`https://hub.textile.io/ipns/bafzbeieuvodl4ypexptlmkfmreq23x66l6djn5depvde7r5jstgstau2nm/${data.id}.json`}
+            href={data.tokenUrl}
           >
             <Button>View on IPFS</Button>
           </a>

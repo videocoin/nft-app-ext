@@ -20,16 +20,16 @@ const Bid = ({ asset }: { asset: Asset }) => {
           <S.BidValue>{asset.instantSalePrice} VID</S.BidValue>
           <S.BidPrice>$10,021.77</S.BidPrice>
         </div>
-        <div>
-          <S.BidLabel>Auction ending in</S.BidLabel>
-          <BidCountdown />
-        </div>
+        {/*<div>*/}
+        {/*  <S.BidLabel>Auction ending in</S.BidLabel>*/}
+        {/*  <BidCountdown />*/}
+        {/*</div>*/}
       </S.BidInfo>
       {!isOwner && (
         <S.BidBtns>
-          <Button size="lg" onClick={handlePlaceBid}>
-            Place a bid
-          </Button>
+          {/*<Button size="lg" onClick={handlePlaceBid}>*/}
+          {/*  Place a bid*/}
+          {/*</Button>*/}
           <Button size="lg" theme="secondary" onClick={handleCheckout}>
             Purchase now
           </Button>

@@ -1,7 +1,5 @@
 import styled from 'styled-components';
 
-export const Root = styled.div``;
-
 export const List = styled.div`
   display: grid;
   grid-gap: 40px;

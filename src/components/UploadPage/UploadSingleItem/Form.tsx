@@ -26,7 +26,8 @@ const Form = () => {
     setOpen(true);
   };
 
-  const watchedInstant = watch('instant');
+  // const watchedInstant = watch('instant');
+  const watchedInstant = true;
   return (
     <form noValidate onSubmit={handleSubmit(onSubmit)}>
       <S.Section>
@@ -86,18 +87,24 @@ const Form = () => {
             </div>
           </div>
           <div>
-            <Switch register={register} name="instant" />
+            <Switch register={register} disabled name="instant" />
           </div>
         </View>
         {watchedInstant && (
-          <View marginT={50}>
-            <S.Label>Price</S.Label>
-            <S.Input
-              hasError={errors.name}
-              {...register('instantSalePrice')}
-              placeholder="e.g. 10"
-            />
-          </View>
+          <>
+            <View marginT={50}>
+              <S.Label>Price</S.Label>
+              <S.Input
+                hasError={errors.name}
+                {...register('instantSalePrice')}
+                placeholder="e.g. 10"
+              />
+            </View>
+            <S.Fee>
+              Fee Notice: This marketplace charges 2.5% (0.023 VID) fee to
+              create an NFT
+            </S.Fee>
+          </>
         )}
       </S.BidSettings>
       <Button type="submit" size="lg">

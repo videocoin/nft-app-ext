@@ -5,9 +5,13 @@ import { Asset } from 'types/asset';
 const AssetDescription = ({
   asset,
   balance,
+  fee,
+  total,
 }: {
   asset: Asset;
   balance: string;
+  fee: string;
+  total: string;
 }) => {
   return (
     <>
@@ -22,11 +26,11 @@ const AssetDescription = ({
       </S.Row>
       <S.Row>
         <S.Label>Service fee</S.Label>
-        <S.Value>0 VID</S.Value>
+        <S.Value>{fee} VID</S.Value>
       </S.Row>
       <S.Row>
         <S.Label>You will pay</S.Label>
-        <S.Value> VID</S.Value>
+        <S.Value>{total} VID</S.Value>
       </S.Row>
     </>
   );

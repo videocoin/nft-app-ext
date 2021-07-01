@@ -39,14 +39,12 @@ class MetamaskStore {
       this.isMetamaskInstalled = true;
     }
   };
-  authUser = async () => {
-    let res;
-    try {
-      res = await authApi.getNonce(this.account);
-    } catch {
-      res = await authApi.signup(this.account);
-    }
-    return res;
+  reset = () => {
+    this.account = '';
+    this.token = null;
+    this.openSea = null;
+    this.vidBalance = 0;
+    this.ethBalance = 0;
   };
 }
 

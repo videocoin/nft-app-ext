@@ -56,6 +56,7 @@ export const BidLabel = styled.div`
 
 export const BidInfo = styled.div`
   display: flex;
+  justify-content: center;
   & > div {
     flex: 1;
     &:first-of-type {

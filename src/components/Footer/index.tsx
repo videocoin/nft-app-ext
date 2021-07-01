@@ -1,11 +1,10 @@
 import Container from 'components/UI/Container';
 import { map } from 'lodash/fp';
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import * as S from './styles';
 import logo from './logo.png';
 import View from '../UI/View';
-import routes from '../../routes';
 
 const menu = [
   {

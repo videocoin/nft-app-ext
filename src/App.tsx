@@ -16,7 +16,7 @@ import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { useEagerConnect, useInactiveListener } from 'lib/hooks';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { connectorName, connectorsByName, injected } from 'lib/connectors';
+import { connectorName, connectorsByName } from 'lib/connectors';
 import UploadPage from 'components/UploadPage';
 import UploadSingleItem from 'components/UploadPage/UploadSingleItem';
 import { RootStore, StoreContext } from 'store';

@@ -61,7 +61,7 @@ export const GlobalStyles = createGlobalStyle`
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
     line-height: 1;
-    background: #f8fafc;
+    background: #fff;
   }
   a {
     background: transparent;
