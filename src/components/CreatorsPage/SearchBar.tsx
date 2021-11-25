@@ -1,8 +1,9 @@
+import Spinner from 'components/UI/Spinner';
+import { ReactComponent as SearchIcon } from 'icons/search.svg';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import { useDebounce, useToggle } from 'react-use';
+
 import * as S from './styles';
-import { ReactComponent as SearchIcon } from 'icons/search.svg';
-import Spinner from 'components/UI/Spinner';
 
 const SearchBar = ({
   onSearch,

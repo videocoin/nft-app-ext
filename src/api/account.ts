@@ -1,6 +1,6 @@
 import api from 'api/index';
-import { Account } from 'types/account';
 import { useQuery } from 'react-query';
+import { Account } from 'types/account';
 
 const routes = {
   get basePath() {

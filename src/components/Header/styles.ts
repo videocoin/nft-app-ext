@@ -1,19 +1,4 @@
 import styled from 'styled-components';
-import View from '../UI/View';
-
-export const Logo = styled.div``;
-
-export const Root = styled(View)`
-  position: relative;
-`;
-
-Root.defaultProps = {
-  row: true,
-  centerV: true,
-  spread: true,
-  paddingH: 80,
-  paddingV: 20,
-};
 
 export const NavBar = styled.div`
   position: absolute;

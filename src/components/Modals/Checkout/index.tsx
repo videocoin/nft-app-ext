@@ -1,20 +1,30 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as S from './styles';
-import { useStore } from 'store';
-import { Asset } from 'types/asset';
-import { toFixedNoRound } from 'lib/utils';
-import { formatToken } from 'lib/units';
-import Modal from 'components/UI/Modal';
+import assetsApi from 'api/assets';
+import AssetDescription from 'components/Modals/Checkout/AssetDescription';
+import Success from 'components/Modals/Checkout/Success';
 import Button from 'components/UI/Button';
 import View from 'components/UI/View';
 import { computeBuyersFee, fulfillInstantSaleOrder } from 'lib/opensea';
+import { formatToken } from 'lib/units';
+import { toFixedNoRound } from 'lib/utils';
+import { observer } from 'mobx-react-lite';
 import { EventType } from 'opensea-js';
-import AssetDescription from 'components/Modals/Checkout/AssetDescription';
-import StatusBlock, { Status } from './StatusBlock';
-import { useUnmount } from 'react-use';
-import assetsApi from 'api/assets';
-import Success from 'components/Modals/Checkout/Success';
+import React, { useEffect, useRef, useState } from 'react';
 import { useQueryClient } from 'react-query';
+import { useUnmount } from 'react-use';
+import { useStore } from 'store';
+import { Asset } from 'types/asset';
+
+import {
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  VStack,
+} from '@chakra-ui/react';
+
+import StatusBlock, { Status } from './StatusBlock';
+import * as S from './styles';
 
 const Checkout = () => {
   const { ethBalance, account, openSea } = useStore('metamaskStore');
@@ -22,7 +32,7 @@ const Checkout = () => {
   const { modals, closeModal } = useStore('modalsStore');
   const onClose = () => closeModal('checkout');
   const asset = useRef<Asset>(modals.get('checkout')?.asset as Asset);
-  const { owner, id } = asset.current;
+  const { id } = asset.current;
   const formattedVidBalance = toFixedNoRound(formatToken(ethBalance), 2);
   const [status, setStatus] = useState(Status.init);
   const [transaction, setTransaction] = useState('');
@@ -31,8 +41,11 @@ const Checkout = () => {
   const fetchAsset = async (id: number) => {
     const res = await assetsApi.fetchAsset(id);
     if (res.status === 'TRANSFERRED') {
+      await Promise.all([
+        queryClient.invalidateQueries('assets'),
+        queryClient.invalidateQueries(['spotlight', 'featured']),
+      ]);
       setStatus(Status.complete);
-      queryClient.invalidateQueries('assets');
     } else {
       poll(id);
     }
@@ -62,12 +75,9 @@ const Checkout = () => {
         poll(id);
       }
     );
-    openSea.addListener(
-      EventType.TransactionDenied,
-      ({ transactionHash, event }) => {
-        setStatus(Status.error);
-      }
-    );
+    openSea.addListener(EventType.TransactionDenied, () => {
+      setStatus(Status.error);
+    });
     openSea.addListener(EventType.TransactionFailed, () => {
       setStatus(Status.error);
     });
@@ -99,46 +109,54 @@ const Checkout = () => {
   }, [fee, openSea, account]);
   useEffect(() => {
     if (fee !== '' && asset) {
-      const total =
-        parseFloat(asset.current.instantSalePrice) + parseFloat(fee);
+      const total = asset.current.instantSalePrice + parseFloat(fee);
       setTotalPrice(total.toPrecision());
     }
   }, [fee, asset]);
   const isProcessing = Boolean(status);
   const isSuccess = Boolean(status === Status.complete);
+
   return (
-    <Modal>
-      {isProcessing ? (
-        isSuccess ? (
-          <Success asset={asset.current} transaction={transaction} />
+    <ModalContent>
+      <ModalCloseButton />
+      <ModalHeader>Checkout</ModalHeader>
+      <ModalBody>
+        {isProcessing ? (
+          isSuccess ? (
+            <Success asset={asset.current} transaction={transaction} />
+          ) : (
+            <StatusBlock status={status} />
+          )
         ) : (
-          <StatusBlock status={status} />
-        )
-      ) : (
-        <AssetDescription
-          asset={asset.current}
-          balance={formattedVidBalance}
-          fee={fee}
-          total={totalPrice}
-        />
-      )}
-      {isProcessing && !isSuccess && <S.ProgressBar status={status} />}
-      {!status && (
-        <View marginT={30} column>
-          <Button onClick={onCheckout}>
-            {!owner.isVerified ? 'I understand, continue' : 'Continue'}
-          </Button>
-        </View>
-      )}
-      <View marginT={10} column>
-        {(isSuccess || status === Status.init || status === Status.error) && (
-          <Button onClick={onClose} theme="secondary">
-            {isSuccess || status === Status.error ? 'Close' : 'Cancel'}
-          </Button>
+          <AssetDescription
+            asset={asset.current}
+            balance={formattedVidBalance}
+            fee={fee}
+            total={totalPrice}
+          />
         )}
-      </View>
-    </Modal>
+        {isProcessing && !isSuccess && <S.ProgressBar status={status} />}
+      </ModalBody>
+      <ModalFooter>
+        <VStack flex={1} align="stretch">
+          {!status && (
+            <View marginT={30} column>
+              <Button onClick={onCheckout}>Continue</Button>
+            </View>
+          )}
+          <View marginT={10} column>
+            {(isSuccess ||
+              status === Status.init ||
+              status === Status.error) && (
+              <Button onClick={onClose} theme="secondary">
+                {isSuccess || status === Status.error ? 'Close' : 'Cancel'}
+              </Button>
+            )}
+          </View>
+        </VStack>
+      </ModalFooter>
+    </ModalContent>
   );
 };
 
-export default Checkout;
+export default observer(Checkout);

@@ -1,3 +1,4 @@
+import { Link as BaseLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const List = styled.div`
@@ -18,8 +19,9 @@ export const List = styled.div`
 `;
 export const BecomeCard = styled.div`
   background: #fff;
+  flex-shrink: 0;
   border: 1px solid #edf0f4;
-  box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
   border-radius: 30px;
   padding: 60px 40px 40px;
   width: 350px;
@@ -40,4 +42,10 @@ export const Title = styled.div`
   line-height: 40px;
   font-weight: bold;
   margin-bottom: auto;
+`;
+
+export const Link = styled(BaseLink)`
+  & > * {
+    width: 100%;
+  }
 `;

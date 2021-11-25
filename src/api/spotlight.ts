@@ -1,7 +1,9 @@
-import api from './index';
 import { useQuery } from 'react-query';
-import { Asset } from '../types/asset';
 import { Creator } from 'types/creators';
+
+import { Asset } from '../types/asset';
+
+import api from './index';
 
 const routes = {
   get baseUrl() {

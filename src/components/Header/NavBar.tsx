@@ -1,25 +1,24 @@
+import { map } from 'lodash/fp';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { map } from 'lodash/fp';
+
 import * as S from './styles';
 
 interface Link {
   path: string;
   name: string;
+  end?: boolean;
 }
 
 const menu: Link[] = [
   {
     path: '/',
     name: 'Home',
+    end: true,
   },
   {
-    path: '/drops',
-    name: 'Drops',
-  },
-  {
-    path: '/videos',
-    name: 'Video Art',
+    path: '/arts',
+    name: 'Art',
   },
   {
     path: '/creators',
@@ -28,9 +27,9 @@ const menu: Link[] = [
 ];
 
 const NavBar = () => {
-  const renderLink = ({ name, path }: Link) => {
+  const renderLink = ({ end = false, name, path }: Link) => {
     return (
-      <NavLink end to={path} key={name}>
+      <NavLink end={end} to={path} key={name}>
         {name}
       </NavLink>
     );

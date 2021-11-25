@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { css } from 'styled-components';
+
 import { Size } from './share';
 
 const xxs = css`
@@ -46,6 +47,7 @@ const sizes: Record<Size, any> = {
 export const Avatar = styled.div<{ size: Size }>`
   ${({ size }) => sizes[size]};
   overflow: hidden;
+  background: #fff;
   img {
     width: 100%;
     height: 100%;

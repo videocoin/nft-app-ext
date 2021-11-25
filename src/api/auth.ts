@@ -17,8 +17,8 @@ const authApi = {
     const { data } = await api.get(routes.noncePath(address));
     return data;
   },
-  async signup(address: string) {
-    const { data } = await api.post(routes.signupPath(), { address });
+  async signup(address: string, epk: string) {
+    const { data } = await api.post(routes.signupPath(), { address, epk });
     return data;
   },
   async auth(address: string, signature: string) {

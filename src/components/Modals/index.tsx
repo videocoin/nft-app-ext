@@ -1,28 +1,58 @@
-import React from 'react';
+import Checkout from 'components/Modals/Checkout';
 import { observer } from 'mobx-react-lite';
+import React from 'react';
 import { useStore } from 'store';
-import FadeModal from 'components/UI/FadeModal';
+
+import { Modal, ModalOverlay } from '@chakra-ui/react';
+
+import AcceptBid from './AcceptBid';
 import ConnectWallet from './ConnectWallet';
 import PlaceBid from './PlaceBid';
-import Checkout from 'components/Modals/Checkout';
 import PutOnSale from './PutOnSale';
 
 const Modals = () => {
-  const { modals } = useStore('modalsStore');
+  const { modals, closeModal } = useStore('modalsStore');
+  const closeConnectWallet = () => {
+    closeModal('connectWallet');
+  };
+  const closePlaceBid = () => {
+    closeModal('placeBid');
+  };
+  const closeCheckout = () => {
+    closeModal('checkout');
+  };
+  const closePutOnSale = () => {
+    closeModal('putOnSale');
+  };
+  const closeAcceptBid = () => {
+    closeModal('acceptBid');
+  };
   return (
     <div>
-      <FadeModal isOpen={modals.has('connectWallet')}>
+      <Modal onClose={closeConnectWallet} isOpen={modals.has('connectWallet')}>
+        <ModalOverlay />
         <ConnectWallet />
-      </FadeModal>
-      <FadeModal isOpen={modals.has('placeBid')}>
+      </Modal>
+      <Modal size="lg" onClose={closePlaceBid} isOpen={modals.has('placeBid')}>
+        <ModalOverlay />
         <PlaceBid />
-      </FadeModal>
-      <FadeModal isOpen={modals.has('checkout')}>
+      </Modal>
+      <Modal onClose={closeCheckout} isOpen={modals.has('checkout')}>
+        <ModalOverlay />
         <Checkout />
-      </FadeModal>
-      <FadeModal isOpen={modals.has('putOnSale')}>
+      </Modal>
+      <Modal
+        size="lg"
+        onClose={closePutOnSale}
+        isOpen={modals.has('putOnSale')}
+      >
+        <ModalOverlay />
         <PutOnSale />
-      </FadeModal>
+      </Modal>
+      <Modal onClose={closeAcceptBid} isOpen={modals.has('acceptBid')}>
+        <ModalOverlay />
+        <AcceptBid />
+      </Modal>
     </div>
   );
 };

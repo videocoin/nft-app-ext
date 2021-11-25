@@ -1,4 +1,6 @@
+import NumberFormat from 'react-number-format';
 import styled from 'styled-components';
+import { Status } from './StatusBlock';
 
 export const Title = styled.div`
   font-size: 33px;
@@ -40,7 +42,7 @@ export const InputWrapper = styled.div`
   margin-bottom: -2px;
 `;
 
-export const BidInput = styled.input`
+export const BidInput = styled(NumberFormat)`
   border: none;
   font-size: 24px;
   font-weight: 500;
@@ -72,7 +74,7 @@ export const MinBid = styled.div`
 
 export const VIDBadge = styled.div`
   height: 100%;
-  width: 110px;
+  padding: 0px 10px;
   background: #1d1f21;
   border-radius: 20px;
   display: flex;
@@ -110,6 +112,61 @@ export const Footer = styled.div`
   text-align: center;
   font-size: 22px;
   line-height: 31px;
-  margin: 40px -30px -30px;
+  margin: 40px calc(var(--chakra-space-6) * -1) calc(var(--chakra-space-2) * -1);
   padding: 20px 0;
+  border-radius: 0 0 var(--chakra-radii-4xl) var(--chakra-radii-4xl);
+`;
+
+export const StatusTitle = styled.div`
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 10px;
+`;
+
+export const StatusDescription = styled.div`
+  font-size: 19px;
+`;
+
+export const Row = styled.div`
+  font-size: 22px;
+  line-height: 24px;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+`;
+
+export const Label = styled.div`
+  color: #a1aab9;
+  font-weight: 500;
+  strong {
+    color: #17161a;
+  }
+`;
+
+export const Value = styled.div`
+  a {
+    color: #7549d4;
+  }
+`;
+
+export const ProgressBar = styled.div<{ status: Status }>`
+  width: 100%;
+  height: 60px;
+  border-radius: 20px;
+  background-color: #edf0f4;
+  position: relative;
+  margin-top: 30px;
+  overflow: hidden;
+  &::before {
+    transition: 2s linear;
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: ${({ status }) => status * 25}%;
+    background-color: ${({ status }) =>
+      status === Status.error ? '#e2486a' : '#7549d4'};
+  }
 `;

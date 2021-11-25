@@ -1,11 +1,12 @@
-import React from 'react';
-import { List } from './styles';
-import { Creator } from 'types/creators';
-import CreatorCard from 'components/CreatorCard';
 import { useCreators } from 'api/spotlight';
-import { map } from 'lodash/fp';
+import CreatorCard from 'components/CreatorCard';
 import BecomeCreator from 'components/Creators/BecomeCreator';
 import View from 'components/UI/View';
+import { map } from 'lodash/fp';
+import React from 'react';
+import { Creator } from 'types/creators';
+
+import { List } from './styles';
 
 const renderItem = (creator: Creator) => {
   return (

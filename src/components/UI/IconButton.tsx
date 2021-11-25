@@ -14,8 +14,18 @@ const Button = styled.button`
   margin-left: auto;
 `;
 
-const IconButton = ({ children }: { children: ReactNode }) => {
-  return <Button type="button">{children}</Button>;
+const IconButton = ({
+  children,
+  onClick,
+}: {
+  children: ReactNode;
+  onClick?: () => void;
+}) => {
+  return (
+    <Button type="button" onClick={onClick}>
+      {children}
+    </Button>
+  );
 };
 
 export default IconButton;

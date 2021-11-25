@@ -1,25 +1,12 @@
-import React from 'react';
+import init from 'init';
 import ReactDOM from 'react-dom';
-import { Web3Provider } from '@ethersproject/providers';
-import './index.css';
-import App from './App';
+
 import reportWebVitals from './reportWebVitals';
-import { Web3ReactProvider } from '@web3-react/core';
 
-function getLibrary(provider: any): Web3Provider {
-  const library = new Web3Provider(provider);
-  library.pollingInterval = 12000;
-  return library;
-}
-
-ReactDOM.render(
-  <React.StrictMode>
-    <Web3ReactProvider getLibrary={getLibrary}>
-      <App />
-    </Web3ReactProvider>
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+(async function () {
+  const vdom = await init();
+  ReactDOM.render(vdom, document.getElementById('root'));
+})();
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

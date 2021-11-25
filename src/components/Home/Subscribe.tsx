@@ -1,6 +1,8 @@
 import React from 'react';
-import * as S from './styles';
+
 import Container from '../UI/Container';
+
+import * as S from './styles';
 
 const Subscribe = () => {
   return (

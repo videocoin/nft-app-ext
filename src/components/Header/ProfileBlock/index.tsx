@@ -1,39 +1,46 @@
-import React, { useCallback, useEffect } from 'react';
-import * as S from './styles';
-import { formatEther } from '@ethersproject/units';
-import Avatar from 'components/Avatar';
-import View from 'components/UI/View';
-import cutString from 'helpers/cutString';
-import { useWeb3React } from '@web3-react/core';
-import contract from 'lib/contract';
-import { useInterval, useToggle } from 'react-use';
-import { toFixedNoRound } from 'lib/utils';
-import Button from 'components/UI/Button';
-import authApi from 'api/auth';
-import { setTokenHeader } from 'api';
-import jwtDecode from 'jwt-decode';
-import { observer } from 'mobx-react-lite';
-import { useStore } from 'store';
-import useConnectWallet from 'hooks/useConnectWallet';
-import ProfilePopup from 'components/Header/ProfileBlock/ProfilePopup';
 import { useProfile } from 'api/account';
-import { Account } from 'types/account';
+import Avatar from 'components/Avatar';
+import ProfilePopup from 'components/Header/ProfileBlock/ProfilePopup';
+import Button from 'components/UI/Button';
 import Spinner from 'components/UI/Spinner';
-import { Network, OpenSeaPort } from 'opensea-js';
+import View from 'components/UI/View';
+import contractToken from 'contract/token.json';
+import cutString from 'helpers/cutString';
+import useConnectWallet from 'hooks/useConnectWallet';
+import contract from 'lib/contract';
+import { toFixedNoRound } from 'lib/utils';
+import { observer } from 'mobx-react-lite';
+import React, { useCallback, useEffect } from 'react';
+import { useInterval, useToggle } from 'react-use';
+import { useStore } from 'store';
+import { Account } from 'types/account';
+import { TokenBalance } from 'types/balance';
 
-const REACT_APP_TOKEN_ADDRESS = window._env_.REACT_APP_TOKEN_ADDRESS as string;
+import { formatEther } from '@ethersproject/units';
+import { useWeb3React } from '@web3-react/core';
+
+import * as S from './styles';
+import { COIN } from 'const';
+
+import { BigNumberish } from '@ethersproject/bignumber';
+import { FungibleToken } from 'opensea-js/lib/types';
+import { map } from 'lodash/fp';
+
 const BALANCE_FETCH_INTERVAL = 3000;
 
 const ProfileBlock = () => {
   const {
     ethBalance,
-    token,
-    setVidBalance,
+    tokens,
     setEthBalance,
     setAccount,
-    setToken,
+    setTokens,
+    setPaymentTokenBalances,
     isMetamaskInstalled,
-    setOpenSea,
+    auth,
+    setLoading,
+    paymentTokens,
+    paymentTokenBalances,
   } = useStore('metamaskStore');
   const [isOpen, toggle] = useToggle(false);
   const {
@@ -42,17 +49,24 @@ const ProfileBlock = () => {
     isFetchedAfterMount,
     refetch,
   } = useProfile();
+
   const connectWallet = useConnectWallet();
   const { account, library, chainId } = useWeb3React();
   const cutAddress = cutString(account, 5, 4);
-  const getTokenBalance = useCallback(async () => {
+  const getTokenBalances = useCallback(async () => {
     try {
-      const newBalance = await token.balanceOf(account);
-      setVidBalance(newBalance);
+      const balances: TokenBalance[] = [];
+      for (const token of tokens) {
+        const balance: BigNumberish = await token.balanceOf(account);
+        const symbol: string = await token.symbol();
+        balances.push({ symbol, balance });
+      }
+      setPaymentTokenBalances(balances);
     } catch (e) {
-      setVidBalance(0);
+      setPaymentTokenBalances([]);
     }
-  }, [account, setVidBalance, token]);
+  }, [account, setPaymentTokenBalances, tokens]);
+
   const getEthBalance = useCallback(async () => {
     try {
       const newBalance = await library.getBalance(account);
@@ -62,54 +76,29 @@ const ProfileBlock = () => {
     }
   }, [account, library, setEthBalance]);
   const getBalance = useCallback(async () => {
-    if (!account || !library || !token || !chainId) return;
-    getTokenBalance();
+    if (!account || !library || !tokens || !chainId) return;
+    getTokenBalances();
     getEthBalance();
-  }, [account, chainId, getEthBalance, getTokenBalance, library, token]);
-  const auth = async () => {
-    if (!account) return;
-    const authToken = localStorage.getItem('token');
-    const storedAccount = localStorage.getItem('account');
-    if (authToken && storedAccount === account) {
-      const decoded = jwtDecode(authToken) as any;
-      const isExp = decoded.exp * 1000 <= Date.now();
-      if (!isExp) {
-        updateOpenSea();
-        return;
-      }
-    }
-    let res;
-    try {
-      res = await authApi.getNonce(account);
-    } catch {
-      res = await authApi.signup(account);
-    }
-    const signature = await library.getSigner(account).signMessage(res.nonce);
-    const { token } = await authApi.auth(account, signature);
-    localStorage.setItem('token', token);
-    localStorage.setItem('account', account);
-    setTokenHeader(token);
-    updateOpenSea();
-    refetch();
-  };
+  }, [account, chainId, getEthBalance, getTokenBalances, library, tokens]);
 
-  const updateOpenSea = () => {
-    const token = localStorage.getItem('token') || '';
-    const openSeaPort = new OpenSeaPort(library.provider, {
-      networkName: Network.Custom,
-      authToken: token,
-    } as any);
-    setOpenSea(openSeaPort);
-  };
+  const handleAuth = useCallback(
+    () => auth(library, refetch),
+    [auth, library, refetch]
+  );
 
   useEffect(() => {
-    if (!account || !library || !chainId) return;
-    const abi = require('contract/token.json').abi;
-    const vid = contract(REACT_APP_TOKEN_ADDRESS, abi, library);
-    setToken(vid);
-    setAccount(account);
-    auth();
-  }, [account, chainId, library, setAccount, setToken]);
+    if (!library || !chainId) {
+      setLoading(false);
+      return;
+    }
+    const { abi } = contractToken;
+    const tokens = paymentTokens.map((token: FungibleToken) =>
+      contract(token.address, abi, library)
+    );
+    setTokens(tokens);
+    setAccount(account as string);
+    handleAuth();
+  }, [account, chainId, handleAuth, library, setAccount, setLoading]);
   useEffect(() => {
     getBalance();
   }, [getBalance]);
@@ -132,8 +121,15 @@ const ProfileBlock = () => {
       const data: {
         balance: string;
         address: string;
+        tokens: any;
       } & Account = {
         balance: formattedEthBalance,
+        tokens: map(({ balance, symbol }) => {
+          return {
+            symbol: symbol,
+            balance: toFixedNoRound(formatEther(balance), 2),
+          };
+        }, paymentTokenBalances),
         ...profile,
       };
       return (
@@ -141,7 +137,9 @@ const ProfileBlock = () => {
           <View row onClick={toggle}>
             <Avatar name={profile?.address} src={profile?.profileImgUrl} />
             <View marginL={10} marginR={50}>
-              <S.Balance>{formattedEthBalance} VID</S.Balance>
+              <S.Balance>
+                {formattedEthBalance} {COIN}
+              </S.Balance>
               <div>{cutAddress}</div>
             </View>
           </View>
@@ -149,6 +147,9 @@ const ProfileBlock = () => {
           <ProfilePopup isOpen={isOpen} onClose={toggle} data={data} />
         </S.ProfileBlock>
       );
+    }
+    if (account) {
+      return <Button onClick={handleAuth}>Sign in</Button>;
     }
     return <Button onClick={connectWallet}>Connect Wallet</Button>;
   };

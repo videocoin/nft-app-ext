@@ -1,6 +1,7 @@
-import { InjectedConnector } from '@web3-react/injected-connector';
 import { map } from 'lodash/fp';
+
 import { AbstractConnector } from '@web3-react/abstract-connector';
+import { InjectedConnector } from '@web3-react/injected-connector';
 
 const REACT_APP_NETWORKS = map<string, number>(parseInt)(
   window._env_.REACT_APP_NETWORKS?.split(',') || ['5']

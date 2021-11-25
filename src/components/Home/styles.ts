@@ -39,8 +39,8 @@ export const Title = styled.div`
 
 export const Head = styled.div`
   background-color: #f8fafc;
-  padding-top: 220px;
-  margin-top: -160px;
+  padding-top: 60px;
+  margin-top: -48px;
   padding-bottom: 100px;
   margin-bottom: 100px;
 `;

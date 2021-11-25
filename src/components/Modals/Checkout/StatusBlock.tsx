@@ -1,7 +1,4 @@
-import React from 'react';
-import View from 'components/UI/View';
-import Spinner from 'components/UI/Spinner';
-import * as S from './styles';
+import { Center, Flex, Heading, Spinner, Text } from '@chakra-ui/react';
 
 export enum Status {
   init,
@@ -42,18 +39,27 @@ const StatusBlock = ({ status }: { status: Status }) => {
   const currentStatus = statuses[status];
   return (
     <>
-      <S.Title>Purchasing</S.Title>
-      <View row centerV>
+      <Heading size="lg" mb={4}>
+        Purchasing
+      </Heading>
+      <Flex align="center">
         {status !== Status.error && (
-          <View marginR={20}>
-            <Spinner />
-          </View>
+          <Center boxSize="60px" mr={5}>
+            <Spinner
+              size="xl"
+              speed="1s"
+              color="purple.500"
+              emptyColor="gray.200"
+            />
+          </Center>
         )}
-        <View>
-          <S.StatusTitle>{currentStatus.title}</S.StatusTitle>
-          <S.StatusDescription>{currentStatus.description}</S.StatusDescription>
-        </View>
-      </View>
+        <div>
+          <Text fontWeight={700} fontSize="xl">
+            {currentStatus.title}
+          </Text>
+          <Text>{currentStatus.description}</Text>
+        </div>
+      </Flex>
     </>
   );
 };

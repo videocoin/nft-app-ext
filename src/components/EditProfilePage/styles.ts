@@ -105,8 +105,12 @@ export const Input = styled.label`
   }
 `;
 
-export const CoverDropzone = styled.div`
-  background: #f8fafc;
+export const CoverDropzone = styled.div<{
+  isActive: boolean;
+  isReject: boolean;
+}>`
+  background: ${({ isActive, isReject }) =>
+    isActive ? '#e4fbe2' : isReject ? '#fbe9e9' : '#f8fafc'};
   border: 4px dashed #edf0f4;
   border-radius: 30px;
   padding: 77px;
@@ -159,5 +163,6 @@ export const Prefix = styled.div`
   align-items: center;
   justify-content: center;
   color: #a1aab9;
+  pointer-events: none;
   padding-bottom: 4px;
 `;

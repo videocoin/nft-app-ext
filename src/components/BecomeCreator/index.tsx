@@ -2,9 +2,11 @@ import Button from 'components/UI/Button';
 import Container from 'components/UI/Container';
 import View from 'components/UI/View';
 import React from 'react';
-import * as S from './styles';
+import { Link } from 'react-router-dom';
+
 import bg from './bg.jpg';
 import bg2x from './bg@2x.jpg';
+import * as S from './styles';
 
 const BecomeCreator = () => {
   return (
@@ -16,9 +18,11 @@ const BecomeCreator = () => {
           together to move culture forward.
         </S.Description>
         <View row centerH>
-          <Button size="md" theme="gradient">
-            <span>Become a creator</span>
-          </Button>
+          <Link to="/upload">
+            <Button size="md" theme="gradient">
+              <span>Become a creator</span>
+            </Button>
+          </Link>
         </View>
       </Container>
       <S.Bg>

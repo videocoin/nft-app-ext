@@ -1,7 +1,4 @@
-import React from 'react';
-import View from 'components/UI/View';
-import Spinner from 'components/UI/Spinner';
-import * as S from './styles';
+import { Center, Flex, Spinner, Text } from '@chakra-ui/react';
 
 export enum Status {
   init,
@@ -12,14 +9,16 @@ export enum Status {
   createOrder,
   orderDenied,
   approveOrder,
-  transactionCreated,
-  transactionConfirmed,
-  transferred,
   error,
   complete,
 }
 
 const statuses: any = {
+  [Status.init]: {
+    title: '',
+    description: '',
+  },
+
   [Status.start]: {
     title: 'Processing your request',
     description: 'Connecting to your wallet.',
@@ -45,14 +44,6 @@ const statuses: any = {
     title: 'Processing your request',
     description: 'Sending order.',
   },
-  [Status.transactionCreated]: {
-    title: 'Processing your request',
-    description: 'Transaction created',
-  },
-  [Status.transactionConfirmed]: {
-    title: 'Processing your request',
-    description: 'Transaction confirmed',
-  },
   [Status.complete]: {
     title: 'Processing your request',
     description: 'Done',
@@ -64,22 +55,27 @@ const statuses: any = {
 };
 
 const StatusBlock = ({ status }: { status: Status }) => {
+  if (status == Status.init) return <></>;
   const currentStatus = statuses[status];
   return (
-    <>
-      <S.Title>Puting on sale</S.Title>
-      <View row centerV>
-        {status !== Status.error && status !== Status.complete && (
-          <View marginR={20}>
-            <Spinner />
-          </View>
-        )}
-        <View>
-          <S.StatusTitle>{currentStatus.title}</S.StatusTitle>
-          <S.StatusDescription>{currentStatus.description}</S.StatusDescription>
-        </View>
-      </View>
-    </>
+    <Flex align="center">
+      {status !== Status.error && status !== Status.complete && (
+        <Center boxSize="60px" mr={5}>
+          <Spinner
+            size="xl"
+            speed="1s"
+            color="purple.500"
+            emptyColor="gray.200"
+          />
+        </Center>
+      )}
+      <div>
+        <Text fontWeight={700} fontSize="xl">
+          {currentStatus.title}
+        </Text>
+        <Text fontSize="xl">{currentStatus.description}</Text>
+      </div>
+    </Flex>
   );
 };
 

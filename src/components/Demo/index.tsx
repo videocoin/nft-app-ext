@@ -1,9 +1,11 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
-import * as S from './styles';
-import videocoin from './assets/videocoin.svg';
-import filecoin from './assets/filecoin.svg';
-import Button from '../UI/Button';
 import { useNavigate } from 'react-router-dom';
+
+import Button from '../UI/Button';
+
+import filecoin from './assets/filecoin.svg';
+import videocoin from './assets/videocoin.svg';
+import * as S from './styles';
 
 const Demo = () => {
   const navigate = useNavigate();
@@ -12,7 +14,7 @@ const Demo = () => {
     setToken(e.target.value);
   const handleExplore = (e: FormEvent) => {
     e.preventDefault();
-    navigate(`/videos/${token}`);
+    navigate(`/arts/${token}`);
   };
   return (
     <S.Container>

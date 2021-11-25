@@ -1,8 +1,43 @@
-import { OpenSeaPort, EventType } from 'opensea-js';
+import { EventType, OpenSeaPort } from 'opensea-js';
+import { Asset } from 'types/asset';
+import { isNaN } from 'lodash';
+
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
+import { OrderSide } from 'opensea-js/lib/types';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const INVERSE_BASIS_POINT = 10000;
+const SECONDS_IN_24_HOURS = 60 * 60 * 24;
+const AUCTION_EXPIRATION_TIME = SECONDS_IN_24_HOURS * 2;
+
+export function makeSaleOrder(
+  openSeaPort: OpenSeaPort,
+  {
+    account,
+    asset,
+    instantSalePrice,
+    putOnSalePrice,
+    tokenAddress,
+  }: {
+    account: string;
+    asset: Asset;
+    instantSalePrice?: number;
+    putOnSalePrice?: number;
+    tokenAddress?: string;
+  }
+) {
+  if (isNaN(instantSalePrice) && (isNaN(putOnSalePrice) || !tokenAddress)) {
+    throw Error('Invalid order');
+  }
+  if (putOnSalePrice) {
+    const item = { ...asset, putOnSalePrice };
+    makePutOnSaleOrder(openSeaPort, { account, item, tokenAddress });
+  }
+  if (instantSalePrice) {
+    const item = { ...asset, instantSalePrice };
+    makeInstantSaleOrder(openSeaPort, { account, item });
+  }
+}
 
 export function makeInstantSaleOrder(
   openSeaPort: OpenSeaPort,
@@ -39,6 +74,66 @@ export async function fulfillInstantSaleOrder(
   });
 }
 
+export async function makePutOnSaleOrder(
+  openSeaPort: OpenSeaPort,
+  { account, item, tokenAddress }: any
+) {
+  const asset = {
+    tokenAddress: item.assetContract.address,
+    tokenId: item.tokenId,
+    schemaName: item.assetContract.schemaName,
+  };
+  const price = Number(item.putOnSalePrice);
+  const expirationTime =
+    Math.round(Date.now() / 1000) + AUCTION_EXPIRATION_TIME;
+  subscribeSeaportEvents(openSeaPort);
+  return openSeaPort.createSellOrder({
+    asset,
+    accountAddress: account,
+    startAmount: price,
+    paymentTokenAddress: tokenAddress,
+    expirationTime,
+    waitForHighestBid: true,
+  });
+}
+
+export async function makeBidOrder(
+  openSeaPort: OpenSeaPort,
+  { account, item, tokenAddress, bidPrice }: any
+) {
+  const asset = {
+    tokenAddress: item.assetContract.address,
+    tokenId: item.tokenId,
+    schemaName: item.assetContract.schemaName,
+  };
+  const sellOrder = await openSeaPort.api.getOrder({
+    asset_contract_address: item.assetContract.address,
+    token_id: item.tokenId,
+    side: OrderSide.Sell,
+  });
+  const expirationTime = sellOrder.expirationTime.toNumber();
+  subscribeSeaportEvents(openSeaPort);
+  return openSeaPort.createBuyOrder({
+    asset,
+    accountAddress: account,
+    startAmount: bidPrice,
+    paymentTokenAddress: tokenAddress,
+    sellOrder,
+    expirationTime,
+  });
+}
+
+export async function acceptBidOrder(
+  openSeaPort: OpenSeaPort,
+  { account, order }: any
+) {
+  subscribeSeaportEvents(openSeaPort);
+  return openSeaPort.fulfillOrder({
+    order: order,
+    accountAddress: account,
+  });
+}
+
 export async function computeBuyersFee(
   openSeaPort: OpenSeaPort,
   { account, item }: any
@@ -47,7 +142,6 @@ export async function computeBuyersFee(
     asset_contract_address: item.assetContract.address,
     token_id: item.tokenId,
   });
-
   const matchingOrder = await openSeaPort._makeMatchingOrder({
     order,
     accountAddress: account,

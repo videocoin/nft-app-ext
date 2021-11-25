@@ -1,16 +1,19 @@
-import React from 'react';
-import LiveAuctions from '../LiveAuctions';
-import Subscribe from './Subscribe';
-import { Head, Title } from './styles';
-import FeaturedVideos from 'components/FeaturedVideos';
-import BecomeCreator from 'components/BecomeCreator';
-import Creators from '../Creators';
-import FeaturedVideo from 'components/FeaturedVideo';
 import { useFeatured } from 'api/spotlight';
+import BecomeCreator from 'components/BecomeCreator';
+import FeaturedArt from 'components/FeaturedArt';
+import FeaturedArts from 'components/FeaturedArts';
+import React from 'react';
+
+import { Center, Spinner } from '@chakra-ui/react';
+
+import Creators from '../Creators';
+import LiveAuctions from '../LiveAuctions';
+
+import { Head, Title } from './styles';
+import Subscribe from './Subscribe';
 
 const Home = () => {
-  const { data } = useFeatured();
-  if (!data || data.length === 0) return null;
+  const { data, isLoading } = useFeatured();
   return (
     <div>
       <Head>
@@ -18,11 +21,16 @@ const Home = () => {
           The first marketplace&nbsp;
           <span>dedicated to Video NFTs.</span>
         </Title>
-        <FeaturedVideo asset={data[0]} />
+        {data && Boolean(data.length) && <FeaturedArt asset={data[0]} />}
+        {isLoading && (
+          <Center>
+            <Spinner size="xl" color="purple.500" />
+          </Center>
+        )}
       </Head>
       <Subscribe />
       <LiveAuctions />
-      <FeaturedVideos />
+      <FeaturedArts />
       <Creators />
       <BecomeCreator />
     </div>

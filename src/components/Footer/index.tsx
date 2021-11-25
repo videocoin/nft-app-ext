@@ -2,9 +2,11 @@ import Container from 'components/UI/Container';
 import { map } from 'lodash/fp';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import * as S from './styles';
-import logo from './logo.png';
+
 import View from '../UI/View';
+
+import logo from './logo.png';
+import * as S from './styles';
 
 const menu = [
   {
@@ -12,8 +14,8 @@ const menu = [
     name: 'Home',
   },
   {
-    path: '/video-art',
-    name: 'Video art',
+    path: '/art',
+    name: 'Art',
   },
   {
     path: '/valuables',

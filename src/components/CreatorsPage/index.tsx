@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
-import { useInfiniteQuery } from 'react-query';
 import creatorsApi from 'api/creators';
-import { Creator } from 'types/creators';
-import { flatten, path } from 'lodash/fp';
 import List from 'components/CreatorsPage/List';
 import SearchBar from 'components/CreatorsPage/SearchBar';
+import { flatten, path } from 'lodash/fp';
+import React, { useState } from 'react';
+import { useInfiniteQuery } from 'react-query';
+import { Creator } from 'types/creators';
+
+import { Center, Spinner } from '@chakra-ui/react';
+
 import { Wrapper } from './styles';
 
 const ListLoadLimit = 25;
 
 const CreatorsPage = () => {
   const [q, setQ] = useState('');
-  const { data, isFetching } = useInfiniteQuery<Creator[]>(
+  const { data, isFetching, isLoading } = useInfiniteQuery<Creator[]>(
     ['creators', { q }],
     creatorsApi.fetchCreators,
     {
@@ -28,7 +31,13 @@ const CreatorsPage = () => {
   return (
     <Wrapper>
       <SearchBar onSearch={setQ} isFetching={isFetching} />
-      <List data={flatData} />
+      {isLoading ? (
+        <Center>
+          <Spinner size="xl" color="purple.500" />
+        </Center>
+      ) : (
+        <List data={flatData} />
+      )}
     </Wrapper>
   );
 };

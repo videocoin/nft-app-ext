@@ -1,7 +1,8 @@
 import React from 'react';
-import * as S from './styles';
-import { AvatarProps, HashSize } from './share';
 import Identicon from 'react-identicons';
+
+import { AvatarProps, HashSize } from './share';
+import * as S from './styles';
 
 const Avatar = ({ name, src, size = 'sm' }: AvatarProps) => {
   return (

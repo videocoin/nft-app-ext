@@ -1,8 +1,10 @@
-import api from './index';
 import { AxiosRequestConfig } from 'axios';
-import { Asset } from '../types/asset';
-import { QueryFunctionContext, useQuery } from 'react-query';
 import { decamelizeKeys } from 'humps';
+import { QueryFunctionContext, useQuery } from 'react-query';
+
+import { Asset } from '../types/asset';
+
+import api from './index';
 
 const routes = {
   get basePath() {
@@ -35,7 +37,7 @@ const assetsApi = {
     return data;
   },
   async fetchAsset(assetId: number) {
-    const { data } = await api.get(routes.assetPath(assetId));
+    const { data } = await api.get<Asset>(routes.assetPath(assetId));
     return data;
   },
 };

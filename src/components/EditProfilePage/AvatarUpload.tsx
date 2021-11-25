@@ -1,7 +1,8 @@
-import React, { ChangeEvent, useState } from 'react';
-import * as S from './styles';
-import readFile from 'helpers/readFile';
 import Avatar from 'components/Avatar';
+import readFile from 'helpers/readFile';
+import React, { ChangeEvent, useState } from 'react';
+
+import * as S from './styles';
 
 const AvatarUpload = ({
   name,
@@ -28,7 +29,11 @@ const AvatarUpload = ({
         We recommend an image of at least 400x400. Gifs work too 🙌
       </S.UploadDescription>
       <S.UploadButton>
-        <input type="file" onChange={handleChange} />
+        <input
+          type="file"
+          onChange={handleChange}
+          accept="image/gif, image/jpeg, image/png"
+        />
         Upload
       </S.UploadButton>
     </S.UploadAvatar>

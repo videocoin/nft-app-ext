@@ -1,6 +1,6 @@
-import React, { ReactNode, useCallback, useRef } from 'react';
-import useOnCloseByEsc from 'hooks/useOnCloseByEsc';
 import useLockBodyScroll from 'hooks/useLockBodyScroll';
+import useOnCloseByEsc from 'hooks/useOnCloseByEsc';
+import React, { ReactNode, useCallback, useRef } from 'react';
 import styled from 'styled-components';
 export interface ModalProps {
   children: ReactNode;

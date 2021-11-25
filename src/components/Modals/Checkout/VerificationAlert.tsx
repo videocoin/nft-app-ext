@@ -1,10 +1,11 @@
+import Avatar from 'components/Avatar';
 import React from 'react';
 import { Creator } from 'types/creators';
+
 import * as S from './styles';
-import Avatar from 'components/Avatar';
 
 const VerificationAlert = ({ owner }: { owner: Creator }) => {
-  const { profileImgUrl, user, address } = owner;
+  const { profileImgUrl, address } = owner;
   return (
     <S.VerificationAlert>
       <div>

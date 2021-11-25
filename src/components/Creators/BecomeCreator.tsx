@@ -1,6 +1,7 @@
-import React from 'react';
-import * as S from './styles';
 import Button from 'components/UI/Button';
+import React from 'react';
+
+import * as S from './styles';
 
 const BecomeCreator = () => {
   return (
@@ -10,7 +11,9 @@ const BecomeCreator = () => {
         Become a Part <br />
         of Something Great
       </S.Title>
-      <Button theme="secondary">View all creators</Button>
+      <S.Link to="/creators">
+        <Button theme="secondary">View all creators</Button>
+      </S.Link>
     </S.BecomeCard>
   );
 };

@@ -1,7 +1,8 @@
+import readFile from 'helpers/readFile';
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+
 import * as S from './styles';
-import readFile from 'helpers/readFile';
 
 const CoverUpload = ({ onChange }: { onChange: (val: string) => void }) => {
   const [preview, setPreview] = useState('');
@@ -15,10 +16,18 @@ const CoverUpload = ({ onChange }: { onChange: (val: string) => void }) => {
     },
     [onChange]
   );
-  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragAccept, isDragReject } =
+    useDropzone({
+      onDrop,
+      accept: 'image/gif, image/jpeg, image/png',
+    });
 
   return (
-    <S.CoverDropzone {...getRootProps()}>
+    <S.CoverDropzone
+      {...getRootProps()}
+      isAccept={isDragAccept}
+      isReject={isDragReject}
+    >
       <input {...getInputProps()} />
       {preview ? (
         <S.CoverPreview>

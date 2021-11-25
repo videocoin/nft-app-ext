@@ -11,14 +11,9 @@ export const Header = styled.div`
   }
 `;
 
-export const Title = styled.div`
-  font-size: 66px;
-  font-weight: bold;
-  margin-bottom: 50px;
-`;
-
 export const Username = styled.div`
   font-size: 32px;
+  line-height: 1.3;
   display: inline-block;
   font-weight: 700;
   background: linear-gradient(
@@ -47,14 +42,4 @@ export const Address = styled.div`
   justify-content: space-between;
   font-weight: 500;
   margin-bottom: 100px;
-`;
-
-export const AddressVal = styled.div`
-  color: #7549d4;
-  font-weight: normal;
-  margin-top: 20px;
-`;
-
-export const Profile = styled.div`
-  background: #fff;
 `;

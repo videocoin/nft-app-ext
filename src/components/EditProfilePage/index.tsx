@@ -1,18 +1,22 @@
-import React, { useEffect, useMemo } from 'react';
-import Container from 'components/UI/Container';
-import * as S from './styles';
-import { useForm, Controller } from 'react-hook-form';
 import accountApi, { useProfile } from 'api/account';
-import View from 'components/UI/View';
 import AvatarUpload from 'components/EditProfilePage/AvatarUpload';
-import Spinner from 'components/UI/Spinner';
-import Button from 'components/UI/Button';
 import CoverUpload from 'components/EditProfilePage/CoverUpload';
+import Button from 'components/UI/Button';
+import Container from 'components/UI/Container';
+import Spinner from 'components/UI/Spinner';
+import View from 'components/UI/View';
 import { pickBy } from 'lodash';
-import { toast } from 'react-toastify';
+import React, { useEffect, useMemo } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { useQueryClient } from 'react-query';
+
+import { useToast } from '@chakra-ui/react';
+
+import * as S from './styles';
 
 const EditProfilePage = () => {
-  const { data, refetch, isFetchedAfterMount } = useProfile();
+  const toast = useToast();
+  const { data, isFetchedAfterMount } = useProfile();
   const defaultValues = useMemo(
     () => ({
       name: data?.user.name,
@@ -24,6 +28,8 @@ const EditProfilePage = () => {
     }),
     [data]
   );
+
+  const client = useQueryClient();
   const { register, reset, control, formState, handleSubmit } = useForm({
     defaultValues,
   });
@@ -32,14 +38,15 @@ const EditProfilePage = () => {
     if (isFetchedAfterMount) {
       reset(defaultValues);
     }
-  }, [isFetchedAfterMount]);
+  }, [defaultValues, isFetchedAfterMount, reset]);
 
   const onSubmit = async (values: any) => {
     try {
       await accountApi.updateAccount(pickBy(values));
-      await refetch();
-    } catch (e) {
-      toast.error(e.response.data.message);
+      await client.invalidateQueries('profile');
+      await client.invalidateQueries('creators');
+    } catch (e: any) {
+      toast({ title: e.response.data.message, status: 'error' });
     }
   };
 
@@ -85,7 +92,6 @@ const EditProfilePage = () => {
               </S.Input>
               <S.PrefixedInput>
                 <div>User Name</div>
-
                 <S.Prefix>@</S.Prefix>
                 <input
                   type="text"

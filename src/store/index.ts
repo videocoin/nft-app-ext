@@ -1,7 +1,6 @@
 import { createContext, useContext } from 'react';
-
-import ModalStore from 'store/modal';
 import MetamaskStore from 'store/metamask';
+import ModalStore from 'store/modal';
 
 export class RootStore {
   modalsStore: ModalStore;

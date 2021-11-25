@@ -1,4 +1,6 @@
+import { FungibleToken } from 'opensea-js/lib/types';
 import { Creator } from 'types/creators';
+import { Media } from 'types/media';
 
 interface Collection {
   createdDate: string;
@@ -8,7 +10,24 @@ interface Collection {
   openseaSellerFeeBasisPoints: string;
 }
 
+interface AssetContract {
+  address: string;
+  assetContractType: string;
+  buyerFeeBasisPoints: number;
+  description: string;
+  devBuyerFeeBasisPoints: number;
+  devSellerFeeBasisPoints: number;
+  name: string;
+  openseaBuyerFeeBasisPoints: number;
+  openseaSellerFeeBasisPoints: number;
+  schema_name: string;
+  sellerFeeBasisPoints: number;
+  symbol: string;
+}
+
 export interface Asset {
+  assetContract: AssetContract;
+  collection: Collection;
   id: number;
   name: string;
   description: string;
@@ -19,6 +38,7 @@ export interface Asset {
   previewUrl: string;
   status: string;
   tokenId: string;
+  tokenUrl: string;
   url: string;
   ytVideoId: string;
   drmKey: string;
@@ -26,7 +46,21 @@ export interface Asset {
   ipfsEncryptedUrl: string;
   ipfsThumbnailUrl: string;
   ipfsUrl: string;
-  collection: Collection;
-  instantSalePrice: string;
+  instantSalePrice: number;
+  putOnSalePrice: number;
   sold: boolean;
+  onSale: boolean;
+  media: Media[];
+  locked: boolean;
+  auction: Auction;
+  isAuction: boolean;
+  token?: FungibleToken;
+}
+
+export interface Auction {
+  isOpen: boolean;
+  currentBid: number;
+  duration: number;
+  startedAt: string;
+  paymentTokenAddress: string;
 }

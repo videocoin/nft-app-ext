@@ -14,14 +14,6 @@ const sizes: Record<SpinnerSize, number> = {
   xl: 52,
 };
 
-const borderWidth: Record<SpinnerSize, number> = {
-  xs: 1,
-  sm: 2,
-  md: 4,
-  xl: 4,
-};
-
-const getBorderWidth = ({ size = 'md' }: SpinnerProps) => borderWidth[size];
 const getSize = ({ size = 'md' }: SpinnerProps) => sizes[size];
 const Spinner = styled.div<SpinnerProps>`
   transition: all 0.3s linear;

@@ -1,4 +1,4 @@
 export enum Tab {
-  videoArt,
+  art,
   valuables,
 }

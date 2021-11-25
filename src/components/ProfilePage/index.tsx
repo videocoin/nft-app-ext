@@ -1,41 +1,50 @@
-import React, { SyntheticEvent, useState } from 'react';
-import { Link } from 'react-router-dom';
-import View from 'components/UI/View';
-import Avatar from 'components/Avatar';
-import Spinner from 'components/UI/Spinner';
-import Container from 'components/UI/Container';
-import bg from './assets/bg.jpg';
-import * as S from './styles';
-import IconButton from 'components/UI/IconButton';
-import { ReactComponent as ShareIcon } from 'icons/share.svg';
-import { ReactComponent as CopyIcon } from 'icons/copy.svg';
-import Button from 'components/UI/Button';
-import cutString from 'helpers/cutString';
-import { Tab } from './share';
-import TabNav from '../UI/TabNav';
 import { useProfile } from 'api/account';
+import Avatar from 'components/Avatar';
+import Arts from 'components/ProfilePage/Arts';
+import Button from 'components/UI/Button';
+import Container from 'components/UI/Container';
+import IconButton from 'components/UI/IconButton';
+import Spinner from 'components/UI/Spinner';
+import View from 'components/UI/View';
+import cutString from 'helpers/cutString';
+import { ReactComponent as CopyIcon } from 'icons/copy.svg';
+import { ReactComponent as ShareIcon } from 'icons/share.svg';
+import { observer } from 'mobx-react-lite';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useCopyToClipboard } from 'react-use';
 import routes from 'routes';
+
+import { useToast } from '@chakra-ui/react';
+
+import TabNav from '../UI/TabNav';
+
+import bg from './assets/bg.jpg';
+import { Tab } from './share';
+import * as S from './styles';
 
 const tabs = [
   {
-    id: Tab.videoArt,
-    name: 'Video Art',
-  },
-  {
-    id: Tab.valuables,
-    name: 'Valuables',
+    id: Tab.art,
+    name: 'Art',
   },
 ];
 
-const ProfilePage = () => {
+const ProfilePage = observer(() => {
   const { data } = useProfile();
-  const [tab, setTab] = useState(Tab.videoArt);
+  const [tab, setTab] = useState(Tab.art);
   if (!data) return <Spinner />;
   const { profileImgUrl, address, user } = data;
   const shortAddress = cutString(address, 6, 5);
   const { name, username } = user;
-  const handleSwitchTab = (e: SyntheticEvent<HTMLButtonElement>) => {
-    setTab(+(e.currentTarget.dataset.tab as any));
+  // const handleSwitchTab = (e: SyntheticEvent<HTMLButtonElement>) => {
+  //   setTab(+(e.currentTarget.dataset.tab as any));
+  // };
+  const toast = useToast();
+  const [, copyToClipboard] = useCopyToClipboard();
+  const handleCopy = () => {
+    copyToClipboard(address);
+    toast({ title: 'Copied', status: 'success' });
   };
   return (
     <div>
@@ -53,7 +62,7 @@ const ProfilePage = () => {
                 </Button>
               </Link>
               <View marginL={30}>
-                <IconButton>
+                <IconButton onClick={() => false}>
                   <ShareIcon />
                 </IconButton>
               </View>
@@ -67,16 +76,17 @@ const ProfilePage = () => {
                 <div>#29710</div>
                 <S.AddressVal>{shortAddress}</S.AddressVal>
               </div>
-              <IconButton>
+              <IconButton onClick={handleCopy}>
                 <CopyIcon />
               </IconButton>
             </S.Address>
           </View>
           <TabNav tabs={tabs} activeTab={tab} onChange={setTab} />
         </Container>
+        <Arts userId={data.id} />
       </S.Profile>
     </div>
   );
-};
+});
 
 export default ProfilePage;
